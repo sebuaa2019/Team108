@@ -2,11 +2,13 @@ package com.buaase.team108.wirelesstest;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.icu.text.SymbolTable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Trace;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -26,9 +28,11 @@ public class tcp extends Thread{
     public static final int MESSAGE_SEND = 1;
     public static final int MESSAGE_RECEIVE = 2;
     public static final int MESSAGE_TCPCLOSE = 3;
+    public static final int MESSAGE_SENDFAIL = 4;
     private static final String ip = "192.168.43.6";
     private Context context;
     public Handler handler;
+    private int rcvFlag;
 
     public tcp(Context _context){
         context = _context;
@@ -48,9 +52,11 @@ public class tcp extends Thread{
             public void run() {
                 try {
                     String response;
-                    while ((response = reader.readLine()) != null) {
+                    long startTime=System.currentTimeMillis();
+                    while ((response = reader.readLine()) != null && System.currentTimeMillis()-startTime <400) {
                         Log.d("Test",response);
                         MainActivity.handler.obtainMessage(MESSAGE_RECEIVE,response).sendToTarget();
+                        rcvFlag=1;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -75,6 +81,7 @@ public class tcp extends Thread{
         }
         startServerReplyListener(reader);
         try{
+            Log.d("Test","send");
             writer.write(str);
             //writer.write("\r\n");
             writer.flush();
@@ -98,7 +105,20 @@ public class tcp extends Thread{
             public void handleMessage (Message msg) {
                 switch (msg.what){
                     case(MESSAGE_SEND):
-                        connectSend((String)msg.obj);
+                        int counter=5;
+                        rcvFlag=0;
+                        while(counter>=0 && rcvFlag==0){
+                            connectSend((String)msg.obj);
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            counter--;
+                        }
+                        if(rcvFlag==0){
+                            MainActivity.handler.obtainMessage(MESSAGE_SENDFAIL).sendToTarget();
+                        }
                 }
             }
         };
