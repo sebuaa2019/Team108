@@ -1,6 +1,21 @@
 import socket
 import threading
+import os
 
+def str2shell(str):
+    if(str=='map_start'):
+        os.system(r'sh ~/catkin_ws/src/team_108/bash/map_start.sh')
+        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_base.sh')
+    if (str == 'map_finish'):
+        os.system(r'sh ~/catkin_ws/src/team_108/bash/map_finish.sh')
+    if (str == 'move_up'):
+        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_up.sh')
+    if (str == 'move_down'):
+        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_down.sh')
+    if (str == 'move_left'):
+        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_left.sh')
+    if (str == 'move_right'):
+        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_right.sh')
 
 def tcplink():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,7 +28,9 @@ def tcplink():
         print('Accept new connection from %s:%s...' % addr)
         try:
             data = sock.recv(1024)
-            sendStr = 'received: ' + data.decode('utf-8') + '\r\n'
+            rcvStr=data.decode('utf-8')
+            str2shell(rcvStr)
+            sendStr = 'received: ' + rcvStr + '\r\n'
             sock.send(sendStr.encode('utf-8'))
             print(sendStr.replace('\r\n',''))
             sock.close()
@@ -24,6 +41,6 @@ def tcplink():
 
 
 
-
 t = threading.Thread(target=tcplink)
 t.start()
+

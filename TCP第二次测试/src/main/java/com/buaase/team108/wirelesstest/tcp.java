@@ -76,7 +76,7 @@ public class tcp extends Thread{
         startServerReplyListener(reader);
         try{
             writer.write(str);
-            writer.write("\r\n");
+            //writer.write("\r\n");
             writer.flush();
         }catch (IOException e){
             e.printStackTrace();
@@ -100,7 +100,6 @@ public class tcp extends Thread{
                     case(MESSAGE_SEND):
                         connectSend((String)msg.obj);
                 }
-
             }
         };
         Looper.loop();
