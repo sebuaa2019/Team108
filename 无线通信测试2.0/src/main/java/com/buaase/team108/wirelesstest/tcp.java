@@ -18,7 +18,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 import static android.content.Context.WIFI_SERVICE;
 
@@ -32,7 +34,8 @@ public class tcp extends Thread{
     private static final String ip = "192.168.43.6";
     private Context context;
     public Handler handler;
-    private int rcvFlag;
+    private boolean rcvFlag;
+    private boolean rcvGoing;
 
     public tcp(Context _context){
         context = _context;
@@ -52,49 +55,52 @@ public class tcp extends Thread{
             public void run() {
                 try {
                     String response;
-                    long startTime=System.currentTimeMillis();
-                    while ((response = reader.readLine()) != null && System.currentTimeMillis()-startTime <400) {
+                    while ((response = reader.readLine()) != null) {
                         Log.d("Test",response);
                         MainActivity.handler.obtainMessage(MESSAGE_RECEIVE,response).sendToTarget();
-                        rcvFlag=1;
+                        rcvFlag=true;
                     }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                rcvGoing=false;
             }
         }).start();
     }
 
-    private void connectSend(String str){
+    private boolean connectSend(String str){
         BufferedReader reader = null;
         BufferedWriter writer = null;
-        Socket socket = null;
-        while(socket==null || !socket.isConnected()){
-            try {
-                socket = new Socket(ip,9999);
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                socket.setTcpNoDelay(true);
-            } catch (IOException e) {
-                Log.d("Test","connection fail!");
-            }
+        Socket socket = new Socket();
+        try {
+            socket.connect( new InetSocketAddress( ip, 9999), 500);
+        } catch (Exception e) {
+            Log.d("Test","connection fail!");
         }
+        if(!socket.isConnected()){
+            return false;
+        }
+        try {
+            socket.setTcpNoDelay(true);
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        rcvGoing=true;
         startServerReplyListener(reader);
-        try{
-            Log.d("Test","send");
+        try {
+            Log.d("Test","send "+str);
             writer.write(str);
-            //writer.write("\r\n");
             writer.flush();
-        }catch (IOException e){
+//            reader.close();
+//            writer.close();
+//            socket.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        try{
-            reader.close();
-            writer.close();
-            socket.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        return true;
     }
 
     @SuppressLint("HandlerLeak")
@@ -106,17 +112,23 @@ public class tcp extends Thread{
                 switch (msg.what){
                     case(MESSAGE_SEND):
                         int counter=5;
-                        rcvFlag=0;
-                        while(counter>=0 && rcvFlag==0){
-                            connectSend((String)msg.obj);
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                        rcvFlag=false;
+                        while(counter>0 && !rcvFlag){
+                            if(!connectSend((String)msg.obj)) {
+                                counter--;
+                                continue;
+                            }
+                            while(rcvGoing){
+                                try {
+                                    Thread.sleep(100);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                             counter--;
                         }
-                        if(rcvFlag==0){
+                        if(!rcvFlag){
+                            Log.d("Test","sendFail");
                             MainActivity.handler.obtainMessage(MESSAGE_SENDFAIL).sendToTarget();
                         }
                 }
