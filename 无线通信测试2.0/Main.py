@@ -1,44 +1,48 @@
 import socket
 import threading
 import os
-import base64
+import time
+import time
 
 
 def reverseIns(action_list):
     while len(action_list) > 0:
         list_pop = action_list.pop()
         if list_pop == 1:
-            os.system(r'sh ~/catkin_ws/src/team_108/bash/move_down.sh')
+            os.system(r'rosrun team_108 go_backward')
             continue
         if list_pop == 2:
-            os.system(r'sh ~/catkin_ws/src/team_108/bash/move_up.sh')
+            os.system(r'rosrun team_108 go_forward')
             continue
         if list_pop == 3:
-            os.system(r'sh ~/catkin_ws/src/team_108/bash/move_right.sh')
+            os.system(r'rosrun team_108 go_right')
             continue
         if list_pop == 4:
-            os.system(r'sh ~/catkin_ws/src/team_108/bash/move_left.sh')
+            os.system(r'rosrun team_108 go_left')
             continue
 
 def str2shell(str):
     action_list = []
     if (str == 'map_start'):
-        os.system(r'sh ~/catkin_ws/src/team_108/bash/map_start.sh')
-        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_base.sh')
+        os.system("gnome-terminal -e 'bash -c \"roslaunch wpb_home_bringup minimal.launch; exec bash\"'")
+        time.sleep(2)
+        os.system("gnome-terminal -e 'bash -c \"roslaunch wpb_home_tutorials hector_mapping.launch; exec bash\"'")
     if (str == 'map_finish'):
-        os.system(r'sh ~/catkin_ws/src/team_108/bash/map_finish.sh')
-        reverseIns(action_list)
-    if (str == 'move_up'):
-        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_up.sh')
+        os.system("gnome-terminal -e 'bash -c \"rosrun map_server map_saver -f map\"'")
+        os.system("gnome-terminal -e 'bash -c \"cp ~/map.pgm ~/catkin_ws/src/team_108/maps/\"'")
+        os.system("gnome-terminal -e 'bash -c \"cp ~/map.yaml ~/catkin_ws/src/team_108/maps/\"'")
+        #reverseIns(action_list)
+    if (str == 'move_forward'):
+        os.system("gnome-terminal -e 'bash -c \"rosrun team_108 go_forward\"'")
         action_list.append(1)
-    if (str == 'move_down'):
-        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_down.sh')
+    if (str == 'move_backward'):
+        os.system("gnome-terminal -e 'bash -c \"rosrun team_108 go_backward\"'")
         action_list.append(2)
     if (str == 'move_left'):
-        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_left.sh')
+        os.system("gnome-terminal -e 'bash -c \"rosrun team_108 go_left\"'")
         action_list.append(3)
     if (str == 'move_right'):
-        os.system(r'sh ~/catkin_ws/src/team_108/bash/move_right.sh')
+        os.system("gnome-terminal -e 'bash -c \"rosrun team_108 go_right\"'")
         action_list.append(4)
 
 def sendImg(sock):
@@ -55,29 +59,33 @@ def sendImg(sock):
 def tcplink():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
-    s.bind(('192.168.43.6', 9999))
+    s.bind(('192.168.43.229', 9999))
     s.listen(1)
     while True:
-        #print('waiting for connection.....')
+        print('waiting for connection.....')
         sock, addr = s.accept()
-        #print('Accept new connection from %s:%s...' % addr)
+        print('Accept new connection from %s:%s...' % addr)
         try:
             data = sock.recv(1024)
             rcvStr = data.decode('utf-8')
+            if(rcvStr=='end'):
+                sock.close()
+                break
             sendStr = 'received: ' + rcvStr + '\r\n'
+            str2shell(rcvStr)
             sock.send(sendStr.encode('utf-8'))
-            #str2shell(rcvStr)
             print(sendStr.replace('\r\n', ''))
-            if rcvStr=='img':
-                sendImg(sock)
             sock.close()
         except ConnectionAbortedError as e:
             print('Connection Aborted!')
         finally:
             print('Connection from %s:%s closed.' % addr)
+    s.close()
 
 
-t = threading.Thread(target=tcplink)
-t.start()
+# t = threading.Thread(target=tcplink)
+# t.start()
+tcplink()
+
 
 

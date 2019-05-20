@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case tcp.MESSAGE_SENDFAIL:{
                         activeButton();
-                        Toast.makeText(MainActivity.this,"发送失败，请重试",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this,"发送失败，请重试",Toast.LENGTH_SHORT).show();
                         break;
                     }
                 }
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         buttonDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String str = "map_backward";
+                String str = "move_backward";
                 tcpThread.handler.obtainMessage(tcp.MESSAGE_SEND, str).sendToTarget();
                 disableButton();
             }

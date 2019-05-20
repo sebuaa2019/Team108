@@ -31,7 +31,7 @@ public class tcp extends Thread{
     public static final int MESSAGE_RECEIVE = 2;
     public static final int MESSAGE_TCPCLOSE = 3;
     public static final int MESSAGE_SENDFAIL = 4;
-    private static final String ip = "192.168.43.6";
+    private static final String ip = "192.168.43.229";
     private Context context;
     public Handler handler;
     private boolean rcvFlag;
