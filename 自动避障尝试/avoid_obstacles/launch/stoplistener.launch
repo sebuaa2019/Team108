@@ -1,0 +1,7 @@
+<launch>
+
+  <!-- Run stop listener -->
+  <node pkg="avoid_obstacles" type="stop" name="stop">
+  </node>
+
+</launch>
