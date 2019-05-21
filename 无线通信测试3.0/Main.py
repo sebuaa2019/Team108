@@ -69,7 +69,7 @@ def tcplink():
     s.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
     winip = '192.168.43.6'
     linuxip = '192.168.43.229'
-    s.bind((winip, 9999))
+    s.bind((linuxip, 9999))
     s.listen(1)
     while True:
         print('waiting for connection.....')
