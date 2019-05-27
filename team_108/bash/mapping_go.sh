@@ -1,2 +1,0 @@
-roslaunch wpb_home_bringup minimal.launch
-rosrun team_108 mapping_go

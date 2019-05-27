@@ -9,7 +9,7 @@ public:
 	~CInnovationScript();
     //void Queue();
     void Queue_goto_detect();
-    //void Queue_take_pic_detect();
+    void Queue_take_pic_detect();
 };
 
 #endif // INNO_SCRIPT_H
