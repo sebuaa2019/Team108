@@ -277,12 +277,72 @@ target_link_libraries(go_right
   ${catkin_LIBRARIES}
 )
 
-add_executable(innovation_test
-  src/innovation_test.cpp
+#add_executable(script_exc
+ # src/script_exc.cpp
+  #src/action_manager/action_manager.cpp
+ # src/scripts/script.cpp
+#)
+#add_dependencies(script_exc ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(script_exc
+#  ${catkin_LIBRARIES}
+#)
+
+add_executable(script_add1
+  src/script_exc.cpp
   src/action_manager/action_manager.cpp
-  src/scripts/script.cpp
+  src/scripts/script_add1.cpp
 )
-add_dependencies(innovation_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(innovation_test
+add_dependencies(script_add1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(script_add1
+  ${catkin_LIBRARIES}
+)
+
+add_executable(script_add2
+  src/script_exc.cpp
+  src/action_manager/action_manager.cpp
+  src/scripts/script_add2.cpp
+)
+add_dependencies(script_add2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(script_add2
+  ${catkin_LIBRARIES}
+)
+
+add_executable(script_add3
+  src/script_exc.cpp
+  src/action_manager/action_manager.cpp
+  src/scripts/script_add3.cpp
+)
+add_dependencies(script_add3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(script_add3
+  ${catkin_LIBRARIES}
+)
+
+add_executable(script_goto1
+  src/script_exc.cpp
+  src/action_manager/action_manager.cpp
+  src/scripts/script_goto1.cpp
+)
+add_dependencies(script_goto1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(script_goto1
+  ${catkin_LIBRARIES}
+)
+
+add_executable(script_goto2
+  src/script_exc.cpp
+  src/action_manager/action_manager.cpp
+  src/scripts/script_goto2.cpp
+)
+add_dependencies(script_goto2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(script_goto2
+  ${catkin_LIBRARIES}
+)
+
+add_executable(script_goto3
+  src/script_exc.cpp
+  src/action_manager/action_manager.cpp
+  src/scripts/script_goto3.cpp
+)
+add_dependencies(script_goto3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(script_goto3
   ${catkin_LIBRARIES}
 )

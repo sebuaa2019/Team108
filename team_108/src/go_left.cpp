@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #define go_times 1000000
-#define stop_time 1000000
+#define stop_time 10000
 
 int main(int argc, char** argv) { 
 
