@@ -78,7 +78,7 @@ public class tcp extends Thread{
         BufferedWriter writer = null;
         Socket socket = new Socket();
         try {
-            socket.connect( new InetSocketAddress( winip, 9999), 500);
+            socket.connect( new InetSocketAddress( linuxip, 9999), 500);
         } catch (Exception e) {
             Log.d("Test","connection fail!");
         }

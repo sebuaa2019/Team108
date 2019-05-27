@@ -22,6 +22,7 @@ public class Manul extends AppCompatActivity {
     private Button buttonUp;
     private Button buttonDown;
     private Button buttonGoto1;
+    private Button buttonStop;
 
     public static Handler handler;
 
@@ -41,6 +42,7 @@ public class Manul extends AppCompatActivity {
         buttonDown = findViewById(R.id.backward);
         buttonNewWayPoint = findViewById(R.id.addNewWaypoint);
         buttonGoto1 = findViewById(R.id.buttonGoto1);
+        buttonStop = findViewById(R.id.stop);
 
         handler = new Handler() {
             @Override
@@ -113,10 +115,37 @@ public class Manul extends AppCompatActivity {
             }
         });
 
+        buttonrotateLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String str = "rotateleft";
+                tcp.getinstance().handler.obtainMessage(tcp.MESSAGE_SEND, str).sendToTarget();
+                disableButton();
+            }
+        });
+
+        buttonrotateRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String str = "rotateright";
+                tcp.getinstance().handler.obtainMessage(tcp.MESSAGE_SEND, str).sendToTarget();
+                disableButton();
+            }
+        });
+
+        buttonStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String str = "stop";
+                tcp.getinstance().handler.obtainMessage(tcp.MESSAGE_SEND, str).sendToTarget();
+                disableButton();
+            }
+        });
+
         buttonNewWayPoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String str = "addNewWayPoint";
+                String str = "grab";
                 tcp.getinstance().handler.obtainMessage(tcp.MESSAGE_SEND, str).sendToTarget();
                 disableButton();
             }
@@ -125,7 +154,7 @@ public class Manul extends AppCompatActivity {
         buttonGoto1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String str="goto1";
+                String str="navigation";
                 tcp.getinstance().handler.obtainMessage(tcp.MESSAGE_SEND, str).sendToTarget();
                 disableButton();
             }
@@ -141,6 +170,9 @@ public class Manul extends AppCompatActivity {
         buttonRight.setEnabled(true);
         buttonNewWayPoint.setEnabled(true);
         buttonGoto1.setEnabled(true);
+        buttonrotateRight.setEnabled(true);
+        buttonrotateLeft.setEnabled(true);
+        buttonStop.setEnabled(true);
     }
 
     private void disableButton(){
@@ -152,6 +184,9 @@ public class Manul extends AppCompatActivity {
         buttonRight.setEnabled(false);
         buttonNewWayPoint.setEnabled(false);
         buttonGoto1.setEnabled(false);
+        buttonrotateRight.setEnabled(false);
+        buttonrotateLeft.setEnabled(false);
+        buttonStop.setEnabled(false);
     }
 
 
