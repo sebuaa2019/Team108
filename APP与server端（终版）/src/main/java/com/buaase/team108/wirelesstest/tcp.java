@@ -133,7 +133,11 @@ public class tcp extends Thread{
                         }
                         if(!rcvFlag){
                             Log.d("Test","sendFail");
-                            Manul.handler.obtainMessage(MESSAGE_SENDFAIL).sendToTarget();
+                            if(((String) msg.obj).contains("follow")){
+                                Follow.handler.obtainMessage(MESSAGE_SENDFAIL).sendToTarget();
+                            }else{
+                                Manul.handler.obtainMessage(MESSAGE_SENDFAIL).sendToTarget();
+                            }
                         }
                 }
             }

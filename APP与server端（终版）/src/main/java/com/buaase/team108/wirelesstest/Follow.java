@@ -5,13 +5,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class Follow extends AppCompatActivity {
 
     public static Handler handler;
-    private TextView textView;
+    private ImageView imageView;
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -19,8 +20,8 @@ public class Follow extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow);
 
-        textView = findViewById(R.id.textView2);
-        textView.setText("");
+        imageView = findViewById(R.id.imageView);
+
 
         handler = new Handler() {
             @Override
