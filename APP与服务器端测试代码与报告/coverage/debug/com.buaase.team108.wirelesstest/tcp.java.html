@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>tcp.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">com.buaase.team108.wirelesstest</a> &gt; <span class="el_source">tcp.java</span></div><h1>tcp.java</h1><pre class="source lang-java linenums">package com.buaase.team108.wirelesstest;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.icu.text.SymbolTable;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Trace;
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketException;
+
+import static android.content.Context.WIFI_SERVICE;
+
+
+public class tcp extends Thread{
+    public static final int MESSAGE_TCPREADY = 0;
+    public static final int MESSAGE_SEND = 1;
+    public static final int MESSAGE_RECEIVE = 2;
+    public static final int MESSAGE_TCPCLOSE = 3;
+    public static final int MESSAGE_SENDFAIL = 4;
+    private static final String linuxip = &quot;192.168.43.229&quot;;
+    private static final String winip = &quot;192.168.43.6&quot;;
+
+    private static tcp instance;
+    public Handler handler;
+    private boolean rcvFlag;
+    private boolean rcvGoing;
+
+<span class="fc" id="L42">    public tcp(){}</span>
+
+    public static tcp getinstance(){
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if(instance==null){</span>
+<span class="fc" id="L46">            instance = new tcp();</span>
+<span class="fc" id="L47">            instance.start();</span>
+        }
+<span class="fc" id="L49">        return instance;</span>
+    }
+
+    public void startServerReplyListener(final BufferedReader reader) {
+<span class="fc" id="L53">        new Thread(new Runnable() {</span>
+            @Override
+            public void run() {
+                try {
+                    String response;
+<span class="fc bfc" id="L58" title="All 2 branches covered.">                    while ((response = reader.readLine()) != null) {</span>
+<span class="fc" id="L59">                        Log.d(&quot;Test&quot;,response);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                        if(response.contains(&quot;follow&quot;)){</span>
+<span class="fc" id="L61">                            Follow.handler.obtainMessage(MESSAGE_RECEIVE,response).sendToTarget();</span>
+                        }else{
+<span class="fc" id="L63">                            Manul.handler.obtainMessage(MESSAGE_RECEIVE,response).sendToTarget();</span>
+                        }
+<span class="fc" id="L65">                        rcvFlag=true;</span>
+                    }
+
+<span class="nc" id="L68">                } catch (IOException e) {</span>
+<span class="nc" id="L69">                    e.printStackTrace();</span>
+<span class="fc" id="L70">                }</span>
+<span class="fc" id="L71">                rcvGoing=false;</span>
+<span class="fc" id="L72">            }</span>
+<span class="fc" id="L73">        }).start();</span>
+<span class="fc" id="L74">    }</span>
+
+    private boolean connectSend(String str){
+<span class="fc" id="L77">        BufferedReader reader = null;</span>
+<span class="fc" id="L78">        BufferedWriter writer = null;</span>
+<span class="fc" id="L79">        Socket socket = new Socket();</span>
+        try {
+<span class="fc" id="L81">            socket.connect( new InetSocketAddress( winip, 9999), 500);</span>
+<span class="fc" id="L82">        } catch (Exception e) {</span>
+<span class="fc" id="L83">            Log.d(&quot;Test&quot;,&quot;connection fail!&quot;);</span>
+<span class="fc" id="L84">        }</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if(!socket.isConnected()){</span>
+<span class="fc" id="L86">            return false;</span>
+        }
+        try {
+<span class="fc" id="L89">            socket.setTcpNoDelay(true);</span>
+<span class="fc" id="L90">            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));</span>
+<span class="fc" id="L91">            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));</span>
+<span class="nc" id="L92">        } catch (IOException e) {</span>
+<span class="nc" id="L93">            e.printStackTrace();</span>
+<span class="fc" id="L94">        }</span>
+<span class="fc" id="L95">        rcvGoing=true;</span>
+<span class="fc" id="L96">        startServerReplyListener(reader);</span>
+        try {
+<span class="fc" id="L98">            Log.d(&quot;Test&quot;,&quot;send &quot;+str);</span>
+<span class="fc" id="L99">            writer.write(str);</span>
+<span class="fc" id="L100">            writer.flush();</span>
+//            reader.close();
+//            writer.close();
+//            socket.close();
+<span class="nc" id="L104">        } catch (IOException e) {</span>
+<span class="nc" id="L105">            e.printStackTrace();</span>
+<span class="fc" id="L106">        }</span>
+<span class="fc" id="L107">        return true;</span>
+    }
+
+    @SuppressLint(&quot;HandlerLeak&quot;)
+    @Override
+    public void run() {
+<span class="fc" id="L113">        Looper.prepare();</span>
+<span class="fc" id="L114">        handler = new Handler(){</span>
+            public void handleMessage (Message msg) {
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">                switch (msg.what){</span>
+                    case(MESSAGE_SEND):
+<span class="fc" id="L118">                        int counter=5;</span>
+<span class="fc" id="L119">                        rcvFlag=false;</span>
+<span class="fc bfc" id="L120" title="All 4 branches covered.">                        while(counter&gt;0 &amp;&amp; !rcvFlag){</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">                            if(!connectSend((String)msg.obj)) {</span>
+<span class="fc" id="L122">                                counter--;</span>
+<span class="fc" id="L123">                                continue;</span>
+                            }
+<span class="fc bfc" id="L125" title="All 2 branches covered.">                            while(rcvGoing){</span>
+                                try {
+<span class="fc" id="L127">                                    Thread.sleep(100);</span>
+<span class="nc" id="L128">                                } catch (InterruptedException e) {</span>
+<span class="nc" id="L129">                                    e.printStackTrace();</span>
+<span class="pc" id="L130">                                }</span>
+                            }
+<span class="fc" id="L132">                            counter--;</span>
+                        }
+<span class="fc bfc" id="L134" title="All 2 branches covered.">                        if(!rcvFlag){</span>
+<span class="fc" id="L135">                            Log.d(&quot;Test&quot;,&quot;sendFail&quot;);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">                            if(((String) msg.obj).contains(&quot;follow&quot;)){</span>
+<span class="fc" id="L137">                                Follow.handler.obtainMessage(MESSAGE_SENDFAIL).sendToTarget();</span>
+                            }else{
+<span class="fc" id="L139">                                Manul.handler.obtainMessage(MESSAGE_SENDFAIL).sendToTarget();</span>
+                            }
+                        }
+                }
+<span class="fc" id="L143">            }</span>
+        };
+<span class="nc" id="L145">        Looper.loop();</span>
+<span class="nc" id="L146">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.4.1</div></body></html>
