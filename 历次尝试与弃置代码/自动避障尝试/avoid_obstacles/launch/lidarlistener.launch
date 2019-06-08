@@ -1,0 +1,8 @@
+<launch>
+
+  <!-- Run lidar listener -->
+  <node pkg="avoid_obstacles" type="lidar_listener" name="lidar_listener">
+    <param name="pub_topic" value="/scan"/> />
+  </node>
+
+</launch>
