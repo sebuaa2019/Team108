@@ -20293,7 +20293,7 @@
 											"top": 479,
 											"width": 88.51171875,
 											"height": 13,
-											"text": "InitialMap"
+											"text": "Initialize"
 										},
 										{
 											"_type": "LabelView",
@@ -20524,7 +20524,7 @@
 											"top": 479,
 											"width": 98.97900390625,
 											"height": 13,
-											"text": "BasicMovement"
+											"text": "Move"
 										},
 										{
 											"_type": "LabelView",
@@ -22147,7 +22147,7 @@
 											"top": 479,
 											"width": 149.0810546875,
 											"height": 13,
-											"text": "Navigation"
+											"text": "FindPath"
 										},
 										{
 											"_type": "LabelView",
@@ -22932,7 +22932,7 @@
 											"top": 479,
 											"width": 91.3935546875,
 											"height": 13,
-											"text": "GrabObj"
+											"text": "Fetch"
 										},
 										{
 											"_type": "LabelView",
@@ -23445,7 +23445,7 @@
 											"top": 335,
 											"width": 97.18896484375,
 											"height": 13,
-											"text": "ObjDetect"
+											"text": "Target"
 										},
 										{
 											"_type": "LabelView",
@@ -25003,7 +25003,7 @@
 											"top": 391,
 											"width": 85.59814453125,
 											"height": 13,
-											"text": "GUI"
+											"text": "Translate"
 										},
 										{
 											"_type": "LabelView",
@@ -25680,7 +25680,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFrO04GpivzrCY="
 					},
-					"name": "InitialMap",
+					"name": "Initialize",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -25748,7 +25748,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFrO04GpivzrCY="
 					},
-					"name": "BasicMovement",
+					"name": "Move",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -25960,7 +25960,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFrO04GpivzrCY="
 					},
-					"name": "Navigation",
+					"name": "FindPath",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -26040,7 +26040,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFrO04GpivzrCY="
 					},
-					"name": "GrabObj",
+					"name": "Fetch",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -26129,7 +26129,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFrO04GpivzrCY="
 					},
-					"name": "ObjDetect",
+					"name": "Target",
 					"attributes": [
 						{
 							"_type": "UMLAttribute",
@@ -26313,7 +26313,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFrO04GpivzrCY="
 					},
-					"name": "GUI",
+					"name": "Translate",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
