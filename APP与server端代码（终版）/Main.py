@@ -109,12 +109,9 @@ def str2shell2(str):
             p_move = subprocess.Popen('rosrun team_108 turn_right',shell=True)
 
     if str == 'stop':
-        if p_move is None:
-            p_move = subprocess.Popen('rosrun team_108 go_stop',shell=True)
-        else:
-            if p_move.poll() is None:
-                p_move.kill()
-            p_move = subprocess.Popen('rosrun team_108 go_stop',shell=True)
+        p_temp = subprocess.Popen('rosnode kill rviz',shell=True)
+        p_temp.wait()
+        p_move = subprocess.Popen('rosrun team_108 stop',shell=True)
 
     if 'grab' in str:
         p_temp = subprocess.Popen('rosnode kill rviz', shell=True)
