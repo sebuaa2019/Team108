@@ -44,6 +44,7 @@ public class tcp extends Thread{
     public static tcp getinstance(){
         if(instance==null){
             instance = new tcp();
+
             instance.start();
         }
         return instance;
@@ -115,6 +116,7 @@ public class tcp extends Thread{
             public void handleMessage (Message msg) {
                 switch (msg.what){
                     case(MESSAGE_SEND):
+                        Log.d("Test","run, receive msg, type MESSAGE_SEND");
                         int counter=5;
                         rcvFlag=false;
                         while(counter>0 && !rcvFlag){
@@ -132,7 +134,7 @@ public class tcp extends Thread{
                             counter--;
                         }
                         if(!rcvFlag){
-                            Log.d("Test","sendFail");
+                            Log.d("Test","run, send Fail");
                             if(((String) msg.obj).contains("follow")){
                                 Follow.handler.obtainMessage(MESSAGE_SENDFAIL).sendToTarget();
                             }else{
