@@ -1,5 +1,5 @@
 # Team108
-See the display of our project in the "Display" filefolder
+See the display of our project in the "Display" filefolder. 
 
 ## 小组成员
 李嘉业：PM，负责物体抓取和总控部分的撰写和测试；
